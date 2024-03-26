@@ -14,9 +14,9 @@ var onceD dispatch.IDispatch
 var once sync.Once
 
 func New() (dispatch.IDispatch, error) {
+	var err error
 	if onceD == nil {
 		once.Do(func() {
-			var err error
 			onceD, err = etcd.NewDispatch(time.Second*5, clientv3.Config{
 				Endpoints:   etcdcfg.GetConfig().GetEndpointList(),
 				DialTimeout: time.Duration(etcdcfg.GetConfig().ConnectTimeoutMs) * time.Millisecond,
@@ -27,5 +27,5 @@ func New() (dispatch.IDispatch, error) {
 			}
 		})
 	}
-	return onceD, nil
+	return onceD, err
 }
