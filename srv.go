@@ -17,9 +17,11 @@ import (
 // 可以单独拎出去 自己组装
 
 type GrpcWithGateSrv struct {
-	ip   string
-	name string
-	port uint32
+	ip             string
+	name           string
+	port           uint32
+	gatePort       uint32
+	prometheusPort uint32
 
 	rf            brpc.RegisterFunc
 	checkAuthFunc gate.CheckAuthFunc
@@ -66,6 +68,18 @@ func WithUnaryServerInterceptors(list ...grpc.UnaryServerInterceptor) Option {
 func WithUseDefaultSrvReg() Option {
 	return func(gateSrv *GrpcWithGateSrv) {
 		gateSrv.useDefaultSrvReg = true
+	}
+}
+
+func WithGatePort(gatePort uint32) Option {
+	return func(gateSrv *GrpcWithGateSrv) {
+		gateSrv.gatePort = gatePort
+	}
+}
+
+func WithPrometheusPort(prometheusPort uint32) Option {
+	return func(gateSrv *GrpcWithGateSrv) {
+		gateSrv.prometheusPort = prometheusPort
 	}
 }
 
