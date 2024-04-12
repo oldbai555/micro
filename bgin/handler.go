@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/oldbai555/lbtool/log"
+	"github.com/oldbai555/lbtool/pkg/jsonpb"
 	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/micro/bconst"
 	"github.com/pkg/errors"
@@ -107,8 +107,7 @@ func (r *Handler) UnmarshalerByProtocol(reader io.ReadCloser, pb proto.Message, 
 	var err error
 	switch protocolType {
 	case bconst.PROTO_TYPE_API_JSON:
-		unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: true}
-		err = unmarshaler.Unmarshal(reader, pb)
+		err = jsonpb.Unmarshal(reader, pb)
 	case bconst.PROTO_TYPE_PROTO3:
 		var buf bytes.Buffer
 		_, err := buf.ReadFrom(reader)
@@ -129,12 +128,8 @@ func (r *Handler) UnmarshalerByProtocol(reader io.ReadCloser, pb proto.Message, 
 
 // Success 响应数据
 func (r *Handler) Success(data proto.Message) {
-	m := jsonpb.Marshaler{
-		EmitDefaults: true,
-		OrigName:     true,
-	}
 	var tmp string
-	tmp, err := m.MarshalToString(data)
+	tmp, err := jsonpb.MarshalToString(data)
 	if err != nil {
 		log.Errorf("MarshalToString err %v", err)
 	}

@@ -11,7 +11,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/oldbai555/driver-mysql v0.0.0-20221011051826-9dcf64ef2d7b
 	github.com/oldbai555/gorm v0.0.0-20221011044346-e65800014b93
-	github.com/oldbai555/lbtool v0.0.3-0.20231006045214-75b32c212291
+	github.com/oldbai555/lbtool v0.0.3-0.20240412034103-54308e666411
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.1
 	go.etcd.io/etcd/client/v3 v3.5.9

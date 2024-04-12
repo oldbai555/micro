@@ -163,8 +163,8 @@ github.com/oldbai555/driver-mysql v0.0.0-20221011051826-9dcf64ef2d7b h1:uOwlZEwT
 github.com/oldbai555/driver-mysql v0.0.0-20221011051826-9dcf64ef2d7b/go.mod h1:JN8xnb/1VQVE4ppvSMjd0pbcg2Kq7x7kw9B3zSd0oS4=
 github.com/oldbai555/gorm v0.0.0-20221011044346-e65800014b93 h1:dsnisfvCBhh9HEKB+xSxNk/Wox3vcwXSY43SnPDcXZI=
 github.com/oldbai555/gorm v0.0.0-20221011044346-e65800014b93/go.mod h1:fpKBwqWdOF0xr5eRQsNkma/JtzbsDCVmKi0mhvWCoIY=
-github.com/oldbai555/lbtool v0.0.3-0.20231006045214-75b32c212291 h1:6+GJkQBILdpTX75SBxoIkImhtT53GYvrVL800Adi60E=
-github.com/oldbai555/lbtool v0.0.3-0.20231006045214-75b32c212291/go.mod h1:mhZgVgdQQkY9FC7aaOlF1RWRuKOo8FFNdkmTKjGxD1Y=
+github.com/oldbai555/lbtool v0.0.3-0.20240412034103-54308e666411 h1:uFfaJEHMLBVwboQ4gd6/IN/+jgIdMhRds/G46nw7Gg8=
+github.com/oldbai555/lbtool v0.0.3-0.20240412034103-54308e666411/go.mod h1:SACs1klKyblKkp6kcPWcZVcDex6Q3oHUWjj7t7ZbpCg=
 github.com/onsi/ginkgo v1.16.5 h1:8xi0RTUf59SOSfEtZMvwTvXYMzG4gV23XVHOZiXNtnE=
 github.com/onsi/gomega v1.18.1 h1:M1GfJqGRrBrrGGsbxzV5dqM2U2ApXefZCQpkukxYRLE=
 github.com/patrickmn/go-cache v2.1.0+incompatible h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc=
