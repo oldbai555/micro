@@ -162,7 +162,7 @@ func (r *Handler) Error(err error) {
 
 func (r *Handler) HttpJson(val interface{}) {
 	b, _ := json.Marshal(val)
-	r.RespByJson(http.StatusOK, http.StatusInternalServerError, string(b), bconst.DefaultRspMsg)
+	r.RespByJson(http.StatusOK, 0, string(b), bconst.DefaultRspMsg)
 }
 
 func apiRspTemplate(data string, errCode int32, errMsg string, hint string) string {
