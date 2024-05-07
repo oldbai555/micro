@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin/render"
 	"github.com/golang/protobuf/proto"
 	"github.com/oldbai555/lbtool/log"
+	"github.com/oldbai555/lbtool/pkg/json"
 	"github.com/oldbai555/lbtool/pkg/jsonpb"
 	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/micro/bconst"
@@ -156,7 +157,12 @@ func (r *Handler) Error(err error) {
 		return
 	}
 
-	r.RespByJson(http.StatusOK, 20002, "", err.Error())
+	r.RespByJson(http.StatusOK, http.StatusInternalServerError, "", err.Error())
+}
+
+func (r *Handler) HttpJson(val interface{}) {
+	b, _ := json.Marshal(val)
+	r.RespByJson(http.StatusOK, http.StatusInternalServerError, string(b), bconst.DefaultRspMsg)
 }
 
 func apiRspTemplate(data string, errCode int32, errMsg string, hint string) string {
