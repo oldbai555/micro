@@ -98,11 +98,6 @@ func NewLogFormatter(svr string) func(param gin.LogFormatterParams) string {
 			param.ErrorMessage,
 		)
 
-		_, err := log.GetWriter().Write([]byte(v))
-		if err != nil {
-			log.Errorf("err:%v", err)
-		}
-
 		return v
 	}
 }
