@@ -40,7 +40,7 @@ func (s *Svr) StartSrv(ctx context.Context) error {
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		log.Infof("%-6s %-25s --> %s (%d handlers)", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
-	router := gin.Default()
+	router := gin.New()
 
 	// Create a limiter struct.
 	limiter := tollbooth.NewLimiter(blimiter.Max, blimiter.DefaultExpiredAbleOptions())

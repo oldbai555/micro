@@ -11,6 +11,7 @@ import (
 	"github.com/oldbai555/micro/brpc"
 	"github.com/oldbai555/micro/brpc/reg"
 	"google.golang.org/grpc"
+	"net"
 )
 
 // 聚合 grpc server 和 网关功能
@@ -131,9 +132,30 @@ func (s *GrpcWithGateSrv) Start(ctx context.Context) error {
 }
 
 func (s *GrpcWithGateSrv) genGatePort() uint32 {
-	return s.port + 100
+	return getOnePort()
 }
 
 func (s *GrpcWithGateSrv) genPrometheusPort() uint32 {
-	return s.port + 1000
+	return getOnePort()
+}
+
+func getOnePort() uint32 {
+	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+	if err != nil {
+		log.Errorf("获取端口失败:%s", err)
+		return 0
+	}
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		log.Errorf("监听端口失败:%s", err)
+		return 0
+	}
+	err = l.Close()
+	if err != nil {
+		log.Errorf("结束监听端口失败:%s", err)
+		return 0
+	}
+	onePort := l.Addr().(*net.TCPAddr).Port
+	log.Infof("获取端口成功:%v", onePort)
+	return uint32(onePort)
 }
