@@ -53,7 +53,7 @@ func (s *Svr) StartSrv(ctx context.Context) error {
 		tollbooth_gin.LimitHandler(limiter),
 	)
 
-	checkCmdList(s.cmdList)
+	CheckCmdList(s.cmdList)
 
 	for _, cmd := range s.cmdList {
 		registerCmd(router, cmd, s.checkAuthFunc)
@@ -98,7 +98,7 @@ func (s *Svr) Stop() {
 	}
 }
 
-func checkCmdList(cmdList []*bcmd.Cmd) {
+func CheckCmdList(cmdList []*bcmd.Cmd) {
 	for _, cmd := range cmdList {
 		h := cmd.GRpcFunc
 		v := reflect.ValueOf(h)
