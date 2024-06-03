@@ -59,8 +59,8 @@ func (r *Handler) RespByJson(httpCode int, errCode int32, data string, errMsg st
 	r.C.Status(httpCode)
 
 	if !bodyAllowedForStatus(httpCode) {
-		json := render.JSON{Data: data}
-		json.WriteContentType(w)
+		j := render.JSON{Data: data}
+		j.WriteContentType(w)
 		w.WriteHeaderNow()
 		return
 	}
@@ -166,21 +166,17 @@ func (r *Handler) HttpJson(val interface{}) {
 }
 
 func apiRspTemplate(data string, errCode int32, errMsg string, hint string) string {
-	b := bytes.NewBufferString(`{"data":"`)
-	b.WriteString(data)
-	b.WriteString(`"`)
-
-	b.WriteString(`,"errcode":`)
-	b.WriteString(fmt.Sprintf("%d", errCode))
-
-	b.WriteString(`,"errmsg":"`)
-	b.WriteString(errMsg)
-
-	b.WriteString(`","hint":"`)
-	b.WriteString(hint)
-
-	b.WriteString(`"}`)
-	return b.String()
+	var rsp = map[string]interface{}{
+		"data":    data,
+		"errcode": errCode,
+		"errmsg":  errMsg,
+		"hint":    hint,
+	}
+	marshal, err := json.Marshal(rsp)
+	if err != nil {
+		return ""
+	}
+	return string(marshal)
 }
 
 func bodyAllowedForStatus(status int) bool {
