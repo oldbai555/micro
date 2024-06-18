@@ -5,7 +5,7 @@ import (
 	"github.com/oldbai555/micro/core"
 )
 
-func ProcessDefaultOptions(listOption *core.ListOption, db *BaseScope[any]) error {
+func ProcessDefaultOptions[M any](listOption *core.ListOption, db *BaseScope[M]) error {
 	err := core.NewOptionsProcessor(listOption).
 		AddStringList(
 			core.DefaultListOption_DefaultListOptionSelect,
