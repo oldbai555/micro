@@ -6,6 +6,7 @@ import (
 )
 
 type IUCtx interface {
+	context.Context
 	AuthType() string
 	SetAuthType(authType string)
 	Sid() string

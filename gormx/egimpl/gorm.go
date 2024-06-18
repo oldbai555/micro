@@ -7,6 +7,7 @@
 package egimpl
 
 import (
+	"fmt"
 	"github.com/oldbai555/lbtool/log"
 	"github.com/oldbai555/micro/gormx/engine"
 	"github.com/oldbai555/micro/uctx"
@@ -32,33 +33,63 @@ func (g *GormEngine) DB() *gorm.DB {
 }
 
 func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (*engine.GetModelListRsp, error) {
-	//TODO implement me
-	panic("implement me")
+	var rsp engine.GetModelListRsp
+
+	fields, err := findFieldsByGetModelListReq(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var items []string
+	items = append(items, fmt.Sprintf("SELECT %s FROM %s", fields, quoteName(req.Table)))
+	hasDeletedAt := hasDeletedAtField()
+	if hasDeletedAt && !req.Unscoped {
+		if req.Cond != "" {
+			req.Cond += " AND "
+		}
+		req.Cond += "(deleted_at=0 OR deleted_at IS NULL)"
+	}
+	if req.Cond != "" {
+		items = append(items, fmt.Sprintf("WHERE %s", req.Cond))
+	}
+	if req.Group != "" {
+		items = append(items, fmt.Sprintf("GROUP BY %s", req.Group))
+	}
+	if req.Order != "" {
+		items = append(items, fmt.Sprintf("ORDER BY %s", req.Order))
+	}
+
+	return &rsp, nil
 }
 
 func (g *GormEngine) InsertModel(ctx uctx.IUCtx, req *engine.InsertModelReq) (*engine.InsertModelRsp, error) {
-	//TODO implement me
-	panic("implement me")
+	var rsp engine.InsertModelRsp
+
+	return &rsp, nil
 }
 
 func (g *GormEngine) DelModel(ctx uctx.IUCtx, req *engine.DelModelReq) (*engine.DelModelRsp, error) {
-	//TODO implement me
-	panic("implement me")
+	var rsp engine.DelModelRsp
+
+	return &rsp, nil
 }
 
 func (g *GormEngine) UpdateModel(ctx uctx.IUCtx, req *engine.UpdateModelReq) (*engine.UpdateModelRsp, error) {
-	//TODO implement me
-	panic("implement me")
+	var rsp engine.UpdateModelRsp
+
+	return &rsp, nil
 }
 
 func (g *GormEngine) BatchInsertModel(ctx uctx.IUCtx, req *engine.BatchInsertModelReq) (*engine.BatchInsertModelRsp, error) {
-	//TODO implement me
-	panic("implement me")
+	var rsp engine.BatchInsertModelRsp
+
+	return &rsp, nil
 }
 
 func (g *GormEngine) SetModel(ctx uctx.IUCtx, req *engine.SetModelReq) (*engine.SetModelRsp, error) {
-	//TODO implement me
-	panic("implement me")
+	var rsp engine.SetModelRsp
+
+	return &rsp, nil
 }
 
 func (g *GormEngine) AutoMigrate(modelList []interface{}) {

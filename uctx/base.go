@@ -1,6 +1,9 @@
 package uctx
 
+import "context"
+
 type BaseUCtx struct {
+	context.Context
 	sid          string
 	deviceId     string
 	traceId      string
@@ -10,7 +13,9 @@ type BaseUCtx struct {
 }
 
 func NewBaseUCtx() *BaseUCtx {
-	return &BaseUCtx{}
+	return &BaseUCtx{
+		Context: context.Background(),
+	}
 }
 
 func (U *BaseUCtx) ProtocolType() string {
