@@ -12,7 +12,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/protobuf v1.5.2
 	github.com/json-iterator/go v1.1.12
-	github.com/oldbai555/lbtool v0.0.4-0.20240618053524-98eec42aa2f8
+	github.com/oldbai555/lbtool v0.0.4-0.20240619073233-989bbd33bae7
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.1
 	go.etcd.io/etcd/client/v3 v3.5.9
