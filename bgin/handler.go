@@ -108,7 +108,9 @@ func (r *Handler) UnmarshalerByProtocol(reader io.ReadCloser, pb proto.Message, 
 	var err error
 	switch protocolType {
 	case bconst.PROTO_TYPE_API_JSON:
-		err = jsonpb.Unmarshal(reader, pb)
+		var buf []byte
+		reader.Read(buf)
+		err = jsonpb.Unmarshal(buf, pb)
 	case bconst.PROTO_TYPE_PROTO3:
 		var buf bytes.Buffer
 		_, err := buf.ReadFrom(reader)

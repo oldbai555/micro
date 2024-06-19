@@ -73,7 +73,7 @@ func map2Interface(m map[string]interface{}, i interface{}) error {
 
 func getModelType(m interface{}) string {
 	if v, ok := m.(proto.Message); ok {
-		return proto.MessageName(v)
+		return string(proto.MessageName(v))
 	}
 	// 如果不是proto，就用table name代替
 	return TryGetTableName(m)

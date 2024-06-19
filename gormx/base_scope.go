@@ -312,7 +312,7 @@ func (p *BaseScope[M]) FirstWithResult(ctx uctx.IUCtx, obj interface{}) (SelectR
 		log.Errorf("err:%s", err)
 		return res, err
 	}
-	if rsp.RowsJson == "" {
+	if rsp.RowsJson == "" || rsp.RowsJson == "[]" {
 		return res, p.m.GetNotFoundErr()
 	}
 	if err = rowsJsonToPb(rsp.RowsJson, obj); err != nil {
