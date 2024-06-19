@@ -14,6 +14,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+	"sync"
 	"time"
 )
 
@@ -25,7 +26,17 @@ const (
 var _ engine.IOrmEngine = (*GormEngine)(nil)
 
 type GormEngine struct {
-	db *gorm.DB
+	db         *gorm.DB
+	lock       sync.Mutex
+	objTypeMgr map[string]*engine.ModelObjectType
+}
+
+func (g *GormEngine) RegObjectType(objTypeList ...*engine.ModelObjectType) {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+	for _, objectType := range objTypeList {
+		g.objTypeMgr[objectType.Name] = objectType
+	}
 }
 
 func (g *GormEngine) DB() *gorm.DB {
@@ -108,7 +119,9 @@ func (g *GormEngine) AutoMigrate(modelList []interface{}) {
 
 func NewGormEngine(dsn string) *GormEngine {
 	var err error
-	g := &GormEngine{}
+	g := &GormEngine{
+		objTypeMgr: make(map[string]*engine.ModelObjectType),
+	}
 	g.db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,  // 是否单表，命名是否复数

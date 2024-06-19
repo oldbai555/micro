@@ -15,6 +15,7 @@ type IOrmEngine interface {
 	UpdateModel(ctx uctx.IUCtx, req *UpdateModelReq) (*UpdateModelRsp, error)
 	BatchInsertModel(ctx uctx.IUCtx, req *BatchInsertModelReq) (*BatchInsertModelRsp, error)
 	SetModel(ctx uctx.IUCtx, req *SetModelReq) (*SetModelRsp, error)
+	RegObjectType(objType ...*ModelObjectType)
 }
 
 var ormEngine IOrmEngine

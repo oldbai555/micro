@@ -1228,6 +1228,182 @@ func (x *SetModelRsp) GetJsonData() string {
 	return ""
 }
 
+type ModelObjectType struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name      string           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	FieldList *ObjectFieldList `protobuf:"bytes,2,opt,name=field_list,json=fieldList,proto3" json:"field_list,omitempty"`
+}
+
+func (x *ModelObjectType) Reset() {
+	*x = ModelObjectType{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_gormx_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ModelObjectType) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ModelObjectType) ProtoMessage() {}
+
+func (x *ModelObjectType) ProtoReflect() protoreflect.Message {
+	mi := &file_gormx_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ModelObjectType.ProtoReflect.Descriptor instead.
+func (*ModelObjectType) Descriptor() ([]byte, []int) {
+	return file_gormx_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ModelObjectType) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ModelObjectType) GetFieldList() *ObjectFieldList {
+	if x != nil {
+		return x.FieldList
+	}
+	return nil
+}
+
+type ObjectFieldList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	List []*ObjectField `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`
+}
+
+func (x *ObjectFieldList) Reset() {
+	*x = ObjectFieldList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_gormx_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ObjectFieldList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ObjectFieldList) ProtoMessage() {}
+
+func (x *ObjectFieldList) ProtoReflect() protoreflect.Message {
+	mi := &file_gormx_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ObjectFieldList.ProtoReflect.Descriptor instead.
+func (*ObjectFieldList) Descriptor() ([]byte, []int) {
+	return file_gormx_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ObjectFieldList) GetList() []*ObjectField {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+type ObjectField struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// @desc: 字段名
+	FieldName string `protobuf:"bytes,1,opt,name=field_name,json=fieldName,proto3" json:"field_name,omitempty"`
+	// @desc: 真实类型: 比如 uint32 string bool object ...
+	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	// @desc: 字段注释
+	Comment string `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	IsArray bool   `protobuf:"varint,4,opt,name=is_array,json=isArray,proto3" json:"is_array,omitempty"`
+}
+
+func (x *ObjectField) Reset() {
+	*x = ObjectField{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_gormx_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ObjectField) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ObjectField) ProtoMessage() {}
+
+func (x *ObjectField) ProtoReflect() protoreflect.Message {
+	mi := &file_gormx_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ObjectField.ProtoReflect.Descriptor instead.
+func (*ObjectField) Descriptor() ([]byte, []int) {
+	return file_gormx_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ObjectField) GetFieldName() string {
+	if x != nil {
+		return x.FieldName
+	}
+	return ""
+}
+
+func (x *ObjectField) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *ObjectField) GetComment() string {
+	if x != nil {
+		return x.Comment
+	}
+	return ""
+}
+
+func (x *ObjectField) GetIsArray() bool {
+	if x != nil {
+		return x.IsArray
+	}
+	return false
+}
+
 var File_gormx_proto protoreflect.FileDescriptor
 
 var file_gormx_proto_rawDesc = []byte{
@@ -1405,10 +1581,28 @@ var file_gormx_proto_rawDesc = []byte{
 	0x0d, 0x72, 0x6f, 0x77, 0x73, 0x5f, 0x61, 0x66, 0x66, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x72, 0x6f, 0x77, 0x73, 0x41, 0x66, 0x66, 0x65, 0x63, 0x74,
 	0x65, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x6a, 0x73, 0x6f, 0x6e, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6a, 0x73, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x42,
-	0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6c,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6a, 0x73, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x22,
+	0x5c, 0x0a, 0x0f, 0x4d, 0x6f, 0x64, 0x65, 0x6c, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x35, 0x0a, 0x0a, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x5f,
+	0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x67, 0x6f, 0x72,
+	0x6d, 0x78, 0x2e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x4c, 0x69,
+	0x73, 0x74, 0x52, 0x09, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x22, 0x39, 0x0a,
+	0x0f, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x4c, 0x69, 0x73, 0x74,
+	0x12, 0x26, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12,
+	0x2e, 0x67, 0x6f, 0x72, 0x6d, 0x78, 0x2e, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x46, 0x69, 0x65,
+	0x6c, 0x64, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x22, 0x75, 0x0a, 0x0b, 0x4f, 0x62, 0x6a, 0x65,
+	0x63, 0x74, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x66, 0x69, 0x65, 0x6c, 0x64,
+	0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x66, 0x69, 0x65,
+	0x6c, 0x64, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x69, 0x73, 0x5f, 0x61, 0x72, 0x72, 0x61, 0x79,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x69, 0x73, 0x41, 0x72, 0x72, 0x61, 0x79, 0x42,
+	0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6c,
 	0x64, 0x62, 0x61, 0x69, 0x35, 0x35, 0x35, 0x2f, 0x6d, 0x69, 0x63, 0x72, 0x6f, 0x2f, 0x67, 0x6f,
-	0x72, 0x6d, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x6d, 0x78, 0x2f, 0x65, 0x6e, 0x67, 0x69, 0x6e, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -1423,7 +1617,7 @@ func file_gormx_proto_rawDescGZIP() []byte {
 	return file_gormx_proto_rawDescData
 }
 
-var file_gormx_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_gormx_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_gormx_proto_goTypes = []interface{}{
 	(*GetModelListReq)(nil),     // 0: gormx.GetModelListReq
 	(*GetModelListRsp)(nil),     // 1: gormx.GetModelListRsp
@@ -1437,13 +1631,18 @@ var file_gormx_proto_goTypes = []interface{}{
 	(*BatchInsertModelRsp)(nil), // 9: gormx.BatchInsertModelRsp
 	(*SetModelReq)(nil),         // 10: gormx.SetModelReq
 	(*SetModelRsp)(nil),         // 11: gormx.SetModelRsp
+	(*ModelObjectType)(nil),     // 12: gormx.ModelObjectType
+	(*ObjectFieldList)(nil),     // 13: gormx.ObjectFieldList
+	(*ObjectField)(nil),         // 14: gormx.ObjectField
 }
 var file_gormx_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	13, // 0: gormx.ModelObjectType.field_list:type_name -> gormx.ObjectFieldList
+	14, // 1: gormx.ObjectFieldList.list:type_name -> gormx.ObjectField
+	2,  // [2:2] is the sub-list for method output_type
+	2,  // [2:2] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_gormx_proto_init() }
@@ -1596,6 +1795,42 @@ func file_gormx_proto_init() {
 				return nil
 			}
 		}
+		file_gormx_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ModelObjectType); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_gormx_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ObjectFieldList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_gormx_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ObjectField); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1603,7 +1838,7 @@ func file_gormx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_gormx_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
