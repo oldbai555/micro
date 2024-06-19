@@ -1,8 +1,8 @@
 package gormx
 
 import (
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/oldbai555/lbtool/log"
+	"github.com/oldbai555/lbtool/pkg/jsonpb"
 	"google.golang.org/protobuf/proto"
 	"path/filepath"
 	"strings"
@@ -35,10 +35,7 @@ func rowsJsonToPb(rowsJson string, obj interface{}) error {
 
 func toJonSkipZeroValueField(obj interface{}) (string, error) {
 	if msg, ok := obj.(proto.Message); ok {
-		var m = jsonpb.Marshaler{
-			OrigName: true,
-		}
-		j, err := m.MarshalToString(msg)
+		j, err := jsonpb.MarshalToString(msg)
 		if err != nil {
 			log.Errorf("proto MarshalToString err:v", err)
 			return "", err

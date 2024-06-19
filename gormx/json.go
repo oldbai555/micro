@@ -1,19 +1,14 @@
 package gormx
 
 import (
-	"bytes"
 	"encoding/json"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/oldbai555/lbtool/log"
+	"github.com/oldbai555/lbtool/pkg/jsonpb"
 	"google.golang.org/protobuf/proto"
 )
 
 func Pb2Json(msg proto.Message) (string, error) {
-	var m = jsonpb.Marshaler{
-		EmitDefaults: true,
-		OrigName:     true,
-	}
-	j, err := m.MarshalToString(msg)
+	j, err := jsonpb.MarshalToString(msg)
 	if err != nil {
 		log.Errorf("proto MarshalToString err:%v", err)
 		return "", err
@@ -31,11 +26,7 @@ func Pb2JsonV2(msg proto.Message) (string, error) {
 }
 
 func Pb2JsonDoNotSkipDefaults(msg proto.Message) (string, error) {
-	var marshalerSkipDefaults = jsonpb.Marshaler{
-		EmitDefaults: true,
-		OrigName:     true,
-	}
-	j, err := marshalerSkipDefaults.MarshalToString(msg)
+	j, err := jsonpb.MarshalToString(msg)
 	if err != nil {
 		log.Errorf("proto MarshalToString err:%v", err)
 		return "", err
@@ -44,11 +35,7 @@ func Pb2JsonDoNotSkipDefaults(msg proto.Message) (string, error) {
 }
 
 func Pb2JsonSkipDefaults(msg proto.Message) (string, error) {
-	var marshalerSkipDefaults = jsonpb.Marshaler{
-		EmitDefaults: false,
-		OrigName:     true,
-	}
-	j, err := marshalerSkipDefaults.MarshalToString(msg)
+	j, err := jsonpb.MarshalToString(msg)
 	if err != nil {
 		log.Errorf("proto MarshalToString err:%v", err)
 		return "", err
@@ -57,10 +44,7 @@ func Pb2JsonSkipDefaults(msg proto.Message) (string, error) {
 }
 
 func Json2Pb(j string, msg proto.Message) error {
-	var u = jsonpb.Unmarshaler{
-		AllowUnknownFields: true,
-	}
-	err := u.Unmarshal(bytes.NewReader([]byte(j)), msg)
+	err := jsonpb.Unmarshal([]byte(j), msg)
 	if err != nil {
 		log.Errorf("UnmarshalString err:%s, json %s", err, j)
 		return err

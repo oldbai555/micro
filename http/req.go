@@ -1,13 +1,12 @@
 package http
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/oldbai555/lbtool/log"
 	"github.com/oldbai555/lbtool/pkg/dispatch"
 	"github.com/oldbai555/lbtool/pkg/json"
+	"github.com/oldbai555/lbtool/pkg/jsonpb"
 	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/lbtool/pkg/restysdk"
 	"github.com/oldbai555/micro/bconst"
@@ -39,12 +38,8 @@ func DoRequest(ctx context.Context, srv, path, method string, protocolType strin
 	var body []byte
 	switch protocolType {
 	case bconst.PROTO_TYPE_API_JSON:
-		m := jsonpb.Marshaler{
-			EmitDefaults: true,
-			OrigName:     true,
-		}
 		var val string
-		val, err = m.MarshalToString(req)
+		val, err = jsonpb.MarshalToString(req)
 		body = []byte(val)
 	case bconst.PROTO_TYPE_PROTO3:
 		body, err = proto.Marshal(req)
@@ -65,7 +60,7 @@ func DoRequest(ctx context.Context, srv, path, method string, protocolType strin
 		log.Errorf("err:%v", err)
 		return err
 	}
-	log.Infof("do http request request: %s", req.String())
+	//log.Infof("do http request request: %v", req.ProtoReflect())
 	resp, err := restysdk.NewRequest().SetHeaders(headers).SetBody(body).Execute(method, result)
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -85,11 +80,10 @@ func DoRequest(ctx context.Context, srv, path, method string, protocolType strin
 		if respBody.ErrCode > 0 {
 			return lberr.NewErr(respBody.ErrCode, respBody.ErrMsg)
 		}
-		unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: true}
-		err = unmarshaler.Unmarshal(bytes.NewReader([]byte(respBody.Data)), out)
+		err = jsonpb.Unmarshal([]byte(respBody.Data), out)
 	case bconst.PROTO_TYPE_PROTO3:
 		err = proto.Unmarshal(resp.Body(), out)
-		log.Infof("do http resp is %s", out.String())
+		//log.Infof("do http resp is %s", out.String())
 	default:
 		err = lberr.NewInvalidArg("resp not found protocol type , val is %s", val)
 	}
