@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
 	"github.com/oldbai555/lbtool/log"
 	"github.com/oldbai555/lbtool/pkg/dispatch"
 	"github.com/oldbai555/lbtool/pkg/json"
@@ -13,6 +12,7 @@ import (
 	"github.com/oldbai555/lbtool/pkg/restysdk"
 	"github.com/oldbai555/micro/bconst"
 	"github.com/oldbai555/micro/brpc/dispatchimpl"
+	"google.golang.org/protobuf/proto"
 	"net/url"
 )
 

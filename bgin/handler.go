@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
-	"github.com/golang/protobuf/proto"
 	"github.com/oldbai555/lbtool/log"
 	"github.com/oldbai555/lbtool/pkg/json"
 	"github.com/oldbai555/lbtool/pkg/jsonpb"
@@ -13,6 +12,7 @@ import (
 	"github.com/oldbai555/micro/bconst"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"io"
 	"net/http"
 )

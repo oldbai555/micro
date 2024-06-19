@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/bytedance/sonic"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 type BaseScope[M any] struct {

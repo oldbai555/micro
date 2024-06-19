@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
 	"github.com/oldbai555/lbtool/log"
+	"google.golang.org/protobuf/proto"
 )
 
 func Pb2Json(msg proto.Message) (string, error) {

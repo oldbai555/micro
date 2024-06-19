@@ -2,8 +2,8 @@ package gormx
 
 import (
 	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
 	"github.com/oldbai555/lbtool/log"
+	"google.golang.org/protobuf/proto"
 	"path/filepath"
 	"strings"
 
