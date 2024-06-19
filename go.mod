@@ -3,6 +3,7 @@ module github.com/oldbai555/micro
 go 1.20
 
 require (
+	github.com/blastrain/vitess-sqlparser v0.0.0-20201030050434-a139afbb1aba
 	github.com/bytedance/sonic v1.11.8
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/didip/tollbooth_gin v0.0.0-20170928041415-5752492be505
@@ -10,7 +11,8 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/protobuf v1.5.2
-	github.com/oldbai555/lbtool v0.0.3-0.20240412034103-54308e666411
+	github.com/json-iterator/go v1.1.12
+	github.com/oldbai555/lbtool v0.0.4-0.20240618053524-98eec42aa2f8
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.1
 	go.etcd.io/etcd/client/v3 v3.5.9
@@ -44,7 +46,7 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/juju/errors v0.0.0-20170703010042-c7d06af17c68 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

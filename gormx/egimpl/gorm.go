@@ -8,12 +8,16 @@ package egimpl
 
 import (
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/oldbai555/lbtool/log"
+	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/micro/gormx/engine"
 	"github.com/oldbai555/micro/uctx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -46,30 +50,103 @@ func (g *GormEngine) DB() *gorm.DB {
 func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (*engine.GetModelListRsp, error) {
 	var rsp engine.GetModelListRsp
 
-	fields, err := findFieldsByGetModelListReq(req)
+	objType, ok := g.objTypeMgr[req.ObjType]
+	if !ok {
+		panic(fmt.Sprintf("not found obj type %s", req.ObjType))
+	}
+
+	fields, err := findFieldsByGetModelListReq(req, objType)
 	if err != nil {
 		return nil, err
 	}
 
 	var items []string
 	items = append(items, fmt.Sprintf("SELECT %s FROM %s", fields, quoteName(req.Table)))
-	hasDeletedAt := hasDeletedAtField()
+	hasDeletedAt := hasDeletedAtField(objType)
 	if hasDeletedAt && !req.Unscoped {
 		if req.Cond != "" {
 			req.Cond += " AND "
 		}
 		req.Cond += "(deleted_at=0 OR deleted_at IS NULL)"
 	}
+
 	if req.Cond != "" {
 		items = append(items, fmt.Sprintf("WHERE %s", req.Cond))
 	}
+
 	if req.Group != "" {
 		items = append(items, fmt.Sprintf("GROUP BY %s", req.Group))
 	}
+
 	if req.Order != "" {
 		items = append(items, fmt.Sprintf("ORDER BY %s", req.Order))
 	}
 
+	if req.Limit > 0 {
+		items = append(items, fmt.Sprintf("LIMIT %d", req.Limit))
+	}
+
+	if req.Offset > 0 {
+		items = append(items, fmt.Sprintf("OFFSET %d", req.Offset))
+	}
+
+	res, err := RawQuery(ctx, g.db, strings.Join(items, " "))
+	if err != nil {
+		return nil, err
+	}
+
+	list := rawResToListMap(objType, res, req.ReturnUnknownFields)
+
+	rsp.NextOffset = req.Offset + req.Limit
+	rsp.CorpId = req.CorpId
+
+	// count 一下
+	if !req.SkipCount && req.Offset == 0 && req.Limit > 0 {
+		// 如果结果超过了一页，进行count*，否则返回当前页的总结果数
+		if uint32(len(res.rows)) >= req.Limit {
+			items = nil
+			items = append(items, fmt.Sprintf("SELECT COUNT(*) AS total FROM %s", quoteName(req.Table)))
+			if req.Cond != "" {
+				items = append(items, fmt.Sprintf("WHERE %s", req.Cond))
+			}
+			if req.Group != "" {
+				items = append(items, fmt.Sprintf("GROUP BY %s", req.Group))
+			}
+			stmt := strings.Join(items, " ")
+			res, err := RawQuery(ctx, g.db, stmt, Option{codeFileLineFunc: req.CodeFileLineFunc, ignoreBroken: req.IgnoreBroken})
+			if err != nil {
+				log.Errorf("err:%s", err)
+				return nil, err
+			}
+			if len(res.rows) == 0 {
+				return nil, lberr.NewErr(-1, "empty response")
+			}
+			row := res.rows[0]
+			if len(row) == 0 {
+				return nil, lberr.NewErr(-1, "empty row")
+			}
+			if req.Group != "" {
+				rsp.Total = uint32(len(res.rows))
+			} else {
+				x, err := strconv.ParseInt(row[0], 10, 32)
+				if err != nil {
+					log.Errorf("err:%s", err)
+					return nil, err
+				}
+				rsp.Total = uint32(x)
+			}
+		} else {
+			rsp.Total = uint32(len(res.rows))
+		}
+	}
+
+	// 转义一下返回
+	j, err := sonic.MarshalString(list)
+	if err != nil {
+		log.Errorf("err:%s", err)
+		return nil, err
+	}
+	rsp.RowsJson = j
 	return &rsp, nil
 }
 
