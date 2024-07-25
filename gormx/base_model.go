@@ -47,7 +47,7 @@ func NewBaseModel[M any](c ModelConfig) *BaseModel[M] {
 	return m
 }
 
-func (p *BaseModel[any]) GetNotFoundErr() error {
+func (p *BaseModel[M]) GetNotFoundErr() error {
 	if p.NotFoundErrCode != 0 {
 		if p.notFoundErr == nil {
 			p.notFoundErr = lberr.NewErr(p.NotFoundErrCode, "record not found")
@@ -57,15 +57,15 @@ func (p *BaseModel[any]) GetNotFoundErr() error {
 	return gorm.ErrRecordNotFound
 }
 
-func (p *BaseModel[any]) IsNotFoundErr(err error) bool {
+func (p *BaseModel[M]) IsNotFoundErr(err error) bool {
 	return err == p.GetNotFoundErr()
 }
 
-func (p *BaseModel[any]) IsUniqueIndexConflictErr(err error) bool {
+func (p *BaseModel[M]) IsUniqueIndexConflictErr(err error) bool {
 	return lberr.GetErrCode(err) == ErrModelUniqueIndexConflict
 }
 
-func (p *BaseModel[any]) GetCaller() string {
+func (p *BaseModel[M]) GetCaller() string {
 	var b bytes.Buffer
 
 	var callerName string
@@ -97,15 +97,15 @@ func (p *BaseModel[M]) NewBaseScope() *BaseScope[M] {
 	return s
 }
 
-func (p *BaseModel[any]) Unscoped(b ...bool) *BaseScope[any] {
+func (p *BaseModel[M]) Unscoped(b ...bool) *BaseScope[M] {
 	return p.NewBaseScope().Unscoped(b...)
 }
 
-func (p *BaseModel[any]) Select(fields ...string) *BaseScope[any] {
+func (p *BaseModel[M]) Select(fields ...string) *BaseScope[M] {
 	return p.NewBaseScope().Select(fields...)
 }
 
-func (p *BaseModel[any]) Where(whereCond ...interface{}) *BaseScope[any] {
+func (p *BaseModel[M]) Where(whereCond ...interface{}) *BaseScope[M] {
 	s := p.NewBaseScope()
 	s.cond.Where(whereCond...)
 	if s.corpId == 0 && s.cond.corpId != 0 {
@@ -114,7 +114,7 @@ func (p *BaseModel[any]) Where(whereCond ...interface{}) *BaseScope[any] {
 	return s
 }
 
-func (p *BaseModel[any]) OrWhere(whereCond ...interface{}) *BaseScope[any] {
+func (p *BaseModel[M]) OrWhere(whereCond ...interface{}) *BaseScope[M] {
 	return p.NewBaseScope().OrWhere(whereCond...)
 }
 
@@ -134,11 +134,11 @@ func (p *BaseModel[M]) Find(ctx uctx.IUCtx) ([]M, error) {
 	return p.NewBaseScope().Find(ctx)
 }
 
-func (p *BaseModel[any]) BatchCreate(ctx uctx.IUCtx, chunkSize int, objList interface{}) (BatchCreateResult, error) {
+func (p *BaseModel[M]) BatchCreate(ctx uctx.IUCtx, chunkSize int, objList interface{}) (BatchCreateResult, error) {
 	return p.NewBaseScope().BatchCreate(ctx, chunkSize, objList)
 }
 
-func (p *BaseModel[any]) NewList(listOption *core.ListOption) *BaseScope[any] {
+func (p *BaseModel[M]) NewList(listOption *core.ListOption) *BaseScope[M] {
 	return p.NewBaseScope().NewList(listOption)
 }
 

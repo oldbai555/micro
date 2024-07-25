@@ -151,9 +151,6 @@ type TraceInfo struct {
 
 func dbExec(ctx uctx.IUCtx, db *gorm.DB, sql string, values ...interface{}) *gorm.DB {
 	res := db.Exec(sql, values...)
-	if res.Error != nil {
-		log.Errorf("err:%v", res.Error)
-	}
 	return res
 }
 

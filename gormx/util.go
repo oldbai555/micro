@@ -26,7 +26,7 @@ func rowsJsonToPb(rowsJson string, obj interface{}) error {
 		}
 		err := sonic.Unmarshal([]byte(j), obj)
 		if err != nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 			return err
 		}
 	}

@@ -185,7 +185,7 @@ func (g *Group) Set(key string, val []byte, exp time.Duration) error {
 	}
 	err := node.Set(context.Background(), key, val, exp).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 
@@ -200,7 +200,7 @@ func (g *Group) SetAny(key string, val interface{}) error {
 	}
 	err := node.Set(context.Background(), key, val, 0).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	return nil
@@ -217,7 +217,7 @@ func (g *Group) SetWithExpire(key string, val interface{}, expire time.Duration)
 	}
 	err := node.Set(context.Background(), key, val, expire).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	return nil
@@ -242,7 +242,7 @@ func (g *Group) SetEx(key string, val interface{}, expire time.Duration) error {
 
 	err = node.Set(context.Background(), key, buf, expire).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	return nil
@@ -256,7 +256,7 @@ func (g *Group) SetUint64(key string, val uint64, exp time.Duration) error {
 	}
 	err := node.Set(context.Background(), key, val, exp).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 
@@ -271,7 +271,7 @@ func (g *Group) SetRange(key string, offset int64, value string) error {
 	}
 	err := node.SetRange(context.Background(), key, offset, value).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	return nil
@@ -281,7 +281,7 @@ func (g *Group) SetPb(key string, pb proto.Message, exp time.Duration) error {
 	log.Debugf("redis: SetPb: key %s, exp %v", key, exp)
 	val, err := proto.Marshal(pb)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	// 空串这里先不考虑
@@ -294,7 +294,7 @@ func (g *Group) SetPb(key string, pb proto.Message, exp time.Duration) error {
 func (g *Group) SetJson(key string, j interface{}, exp time.Duration) error {
 	val, err := json.Marshal(j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	// 空串这里先不考虑
@@ -326,7 +326,7 @@ func (g *Group) HSetPb(key, subKey string, j proto.Message, exp time.Duration) e
 	log.Debugf("redis: HSetPb: key %s subKey %+v exp %v", key, subKey, exp)
 	val, err := proto.Marshal(j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	node := g.FindClient4Key(key)
@@ -352,7 +352,7 @@ func (g *Group) HSetJson(key, subKey string, j interface{}, exp time.Duration) e
 	log.Debugf("redis: HSetJson: key %s subKey %+v", key, subKey)
 	val, err := json.Marshal(j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	node := g.FindClient4Key(key)
@@ -378,7 +378,7 @@ func (g *Group) HSetJsonNX(key, subKey string, j interface{}, exp time.Duration,
 	log.Debugf("redis: HSetJsonNX: key %s subKey %+v exp %v", key, subKey, exp)
 	val, err := json.Marshal(j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	node := g.FindClient4Key(key)
@@ -413,7 +413,7 @@ func (g *Group) Get(key string) ([]byte, error) {
 	val, err := node.Get(context.Background(), key).Bytes()
 	if err != nil {
 		if err != redis.Nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 		}
 		return nil, err
 	}
@@ -425,13 +425,13 @@ func (g *Group) GetPb(key string, pb proto.Message) error {
 	val, err := g.Get(key)
 	if err != nil {
 		if err != redis.Nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 		}
 		return err
 	}
 	err = proto.Unmarshal(val, pb)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	return nil
@@ -446,12 +446,12 @@ func (g *Group) GetJson(key string, j interface{}) error {
 		if err == redis.Nil {
 			return redis.Nil
 		}
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return ErrRedisException
 	}
 	err = json.Unmarshal(val, j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return ErrJsonUnmarshal
 	}
 	return nil
@@ -463,7 +463,7 @@ func (g *Group) GetUint64(key string) (uint64, error) {
 		if err == redis.Nil {
 			return 0, redis.Nil
 		}
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return 0, ErrRedisException
 	}
 
@@ -484,7 +484,7 @@ func (g *Group) GetIntDef(key string, def int) (int, error) {
 	val, err := node.Get(context.Background(), key).Int64()
 	if err != nil {
 		if err != redis.Nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 			return def, err
 		}
 		return def, nil
@@ -501,7 +501,7 @@ func (g *Group) GetInt64(key string) (int64, error) {
 	val, err := node.Get(context.Background(), key).Int64()
 	if err != nil {
 		if err != redis.Nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 		}
 		return 0, err
 	}
@@ -517,7 +517,7 @@ func (g *Group) GetInt64Def(key string, def int64) (int64, error) {
 	val, err := node.Get(context.Background(), key).Int64()
 	if err != nil {
 		if err != redis.Nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 			return def, err
 		}
 		return def, nil
@@ -586,7 +586,7 @@ func (g *Group) HMGetJson(key, subKey string, j interface{}) error {
 				if len(buf) > 0 {
 					err = json.Unmarshal(buf, j)
 					if err != nil {
-						log.Errorf("err:%s", err)
+						log.Errorf("err:%v", err)
 						return ErrJsonUnmarshal
 					}
 				}
@@ -637,7 +637,7 @@ func (g *Group) HMBatchGetJson(key string, m map[string]interface{}) ([]string, 
 					if j != nil {
 						err = json.Unmarshal(buf, j)
 						if err != nil {
-							log.Errorf("err:%s", err)
+							log.Errorf("err:%v", err)
 							errUnmarshalKeyList = append(errUnmarshalKeyList, subKey)
 						}
 					}
@@ -659,7 +659,7 @@ func (g *Group) HDel(key string, subKey ...string) (int64, error) {
 	}
 	delNum, err := node.HDel(context.Background(), key, subKey...).Result()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return 0, err
 	}
 	return delNum, nil
@@ -673,7 +673,7 @@ func (g *Group) Del(key string) error {
 	}
 	err := node.Del(context.Background(), key).Err()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	return nil
@@ -926,7 +926,7 @@ func (g *Group) HIncrBy(key, field string, incr int64) (int64, error) {
 	}
 	n, err := node.HIncrBy(context.Background(), key, field, incr).Result()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return 0, err
 	}
 	return n, nil
@@ -940,7 +940,7 @@ func (g *Group) HIncr(key, field string) (int64, error) {
 	}
 	n, err := node.HIncrBy(context.Background(), key, field, 1).Result()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return 0, err
 	}
 	return n, nil
@@ -954,7 +954,7 @@ func (g *Group) IncrBy(key string, incr int64) (int64, error) {
 	}
 	n, err := node.IncrBy(context.Background(), key, incr).Result()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return 0, err
 	}
 	return n, nil
@@ -968,7 +968,7 @@ func (g *Group) DecrBy(key string, decr int64) (int64, error) {
 	}
 	n, err := node.DecrBy(context.Background(), key, decr).Result()
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return 0, err
 	}
 	return n, nil
@@ -1084,7 +1084,7 @@ func (g *Group) HGetJson(key, subKey string, j interface{}) error {
 	}
 	err = json.Unmarshal([]byte(val), j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return ErrJsonUnmarshal
 	}
 	return nil
@@ -1105,7 +1105,7 @@ func (g *Group) HGetPb(key, subKey string, j proto.Message) error {
 	}
 	err = proto.Unmarshal([]byte(val), j)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return ErrJsonUnmarshal
 	}
 	return nil
@@ -1369,7 +1369,7 @@ func (g *Group) SetPbNX(key string, pb proto.Message, exp time.Duration) (bool, 
 	log.Debugf("redis: SetPbNX: key %s exp %v", key, exp)
 	val, err := proto.Marshal(pb)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return false, err
 	}
 	b, err := g.SetNX(key, val, exp)

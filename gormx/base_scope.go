@@ -3,6 +3,7 @@ package gormx
 import (
 	"errors"
 	"fmt"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/oldbai555/lbtool/log"
 	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/lbtool/utils"
@@ -276,20 +277,20 @@ func (p *BaseScope[M]) Create(ctx uctx.IUCtx, obj interface{}) error {
 		IgnoreBroken:     p.ignoreBroken,
 	})
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return err
 	}
 	if rsp.JsonData != "" {
 		if m, ok := obj.(map[string]interface{}); ok {
 			err = sonic.Unmarshal([]byte(rsp.JsonData), &m)
 			if err != nil {
-				log.Errorf("err:%s", err)
+				log.Errorf("err:%v", err)
 				return err
 			}
 		} else {
-			err = sonic.Unmarshal([]byte(rsp.JsonData), obj)
+			err = jsoniter.Unmarshal([]byte(rsp.JsonData), obj)
 			if err != nil {
-				log.Errorf("err:%s", err)
+				log.Errorf("err:%v", err)
 				return err
 			}
 		}
@@ -309,7 +310,7 @@ func (p *BaseScope[M]) FirstWithResult(ctx uctx.IUCtx, obj interface{}) (SelectR
 	ormEngine := engine.GetOrmEngine()
 	rsp, err := ormEngine.GetModelList(ctx, req)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return res, err
 	}
 	if rsp.RowsJson == "" || rsp.RowsJson == "[]" {
@@ -349,13 +350,13 @@ func (p *BaseScope[M]) FindWithResult(ctx uctx.IUCtx, out interface{}) (SelectRe
 	ormEngine := engine.GetOrmEngine()
 	rsp, err := ormEngine.GetModelList(ctx, req)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return res, err
 	}
 	if rsp.RowsJson != "" {
 		err = sonic.Unmarshal([]byte(rsp.RowsJson), out)
 		if err != nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 			return res, err
 		}
 	} else {
@@ -396,7 +397,7 @@ func (p *BaseScope[M]) Delete(ctx uctx.IUCtx) (DeleteResult, error) {
 	}
 	rsp, err := ormEngine.DelModel(ctx, req)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return res, err
 	}
 	res.RowsAffected = rsp.RowsAffected
@@ -450,7 +451,7 @@ func (p *BaseScope[M]) Update(ctx uctx.IUCtx, updateMap map[string]interface{}) 
 	}
 	buf, err := sonic.Marshal(updateMap)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return res, err
 	}
 	j := string(buf)
@@ -469,7 +470,7 @@ func (p *BaseScope[M]) Update(ctx uctx.IUCtx, updateMap map[string]interface{}) 
 		Db:               p.db,
 	})
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return res, err
 	}
 
@@ -506,7 +507,7 @@ func (p *BaseScope[M]) BatchCreate(ctx uctx.IUCtx, chunkSize int, objList interf
 		for _, obj := range list {
 			j, err := toJonSkipZeroValueField(obj)
 			if err != nil {
-				log.Errorf("err:%s", err)
+				log.Errorf("err:%v", err)
 				return res, err
 			}
 			jsonList = append(jsonList, j)
@@ -523,7 +524,7 @@ func (p *BaseScope[M]) BatchCreate(ctx uctx.IUCtx, chunkSize int, objList interf
 			Db:               p.db,
 		})
 		if err != nil {
-			log.Errorf("err:%s", err)
+			log.Errorf("err:%v", err)
 			return res, err
 		}
 		id := rsp.LastInsertId
@@ -583,7 +584,7 @@ func (p *BaseScope[M]) Save(ctx uctx.IUCtx, obj interface{}) (UpdateResult, erro
 		Db:               p.db,
 	})
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return res, err
 	}
 	if rsp.JsonData != "" {
@@ -703,7 +704,7 @@ func Expr(expression string, args ...interface{}) map[string]any {
 func (p *BaseScope[M]) FindPaginate(ctx uctx.IUCtx, out interface{}) (*core.Paginate, error) {
 	res, err := p.FindWithResult(ctx, out)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return nil, err
 	}
 	o := &core.Paginate{

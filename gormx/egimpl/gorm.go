@@ -92,6 +92,7 @@ func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (
 
 	res, err := RawQuery(ctx, g.db, strings.Join(items, " "))
 	if err != nil {
+		log.Errorf("err:%v", err)
 		return nil, err
 	}
 
@@ -113,9 +114,9 @@ func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (
 				items = append(items, fmt.Sprintf("GROUP BY %s", req.Group))
 			}
 			stmt := strings.Join(items, " ")
-			res, err := RawQuery(ctx, g.db, stmt, Option{codeFileLineFunc: req.CodeFileLineFunc, ignoreBroken: req.IgnoreBroken})
+			res, err := RawQuery(ctx, g.db, stmt)
 			if err != nil {
-				log.Errorf("err:%s", err)
+				log.Errorf("err:%v", err)
 				return nil, err
 			}
 			if len(res.rows) == 0 {
@@ -130,7 +131,7 @@ func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (
 			} else {
 				x, err := strconv.ParseInt(row[0], 10, 32)
 				if err != nil {
-					log.Errorf("err:%s", err)
+					log.Errorf("err:%v", err)
 					return nil, err
 				}
 				rsp.Total = uint32(x)
@@ -143,40 +144,10 @@ func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (
 	// 转义一下返回
 	j, err := sonic.MarshalString(list)
 	if err != nil {
-		log.Errorf("err:%s", err)
+		log.Errorf("err:%v", err)
 		return nil, err
 	}
 	rsp.RowsJson = j
-	return &rsp, nil
-}
-
-func (g *GormEngine) InsertModel(ctx uctx.IUCtx, req *engine.InsertModelReq) (*engine.InsertModelRsp, error) {
-	var rsp engine.InsertModelRsp
-
-	return &rsp, nil
-}
-
-func (g *GormEngine) DelModel(ctx uctx.IUCtx, req *engine.DelModelReq) (*engine.DelModelRsp, error) {
-	var rsp engine.DelModelRsp
-
-	return &rsp, nil
-}
-
-func (g *GormEngine) UpdateModel(ctx uctx.IUCtx, req *engine.UpdateModelReq) (*engine.UpdateModelRsp, error) {
-	var rsp engine.UpdateModelRsp
-
-	return &rsp, nil
-}
-
-func (g *GormEngine) BatchInsertModel(ctx uctx.IUCtx, req *engine.BatchInsertModelReq) (*engine.BatchInsertModelRsp, error) {
-	var rsp engine.BatchInsertModelRsp
-
-	return &rsp, nil
-}
-
-func (g *GormEngine) SetModel(ctx uctx.IUCtx, req *engine.SetModelReq) (*engine.SetModelRsp, error) {
-	var rsp engine.SetModelRsp
-
 	return &rsp, nil
 }
 
