@@ -12,10 +12,12 @@ import (
 	"github.com/go-sql-driver/mysql"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/oldbai555/lbtool/log"
+	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/micro/gormx/engine"
 	"github.com/oldbai555/micro/uctx"
 	"gorm.io/gorm"
 	"reflect"
+	"strconv"
 	"time"
 )
 
@@ -155,6 +157,42 @@ func (g *GormEngine) InsertModel(ctx uctx.IUCtx, req *engine.InsertModelReq) (*e
 func (g *GormEngine) BatchInsertModel(ctx uctx.IUCtx, req *engine.BatchInsertModelReq) (*engine.BatchInsertModelRsp, error) {
 	var rsp engine.BatchInsertModelRsp
 
+	objType, ok := g.objTypeMgr[req.ObjType]
+	if !ok {
+		panic(fmt.Sprintf("not found obj type %s", req.ObjType))
+	}
+	if len(req.JsonDataList) == 0 {
+		return &rsp, nil
+	}
+
+	resList, err := getBatchInsertObjMapList(objType, req.JsonDataList)
+	if err != nil {
+		log.Errorf("err:%v", err)
+		return nil, err
+	}
+
+	if len(resList) == 0 {
+		return nil, lberr.NewInvalidArg("not found batch insert object list")
+	}
+
+	res := g.db.Table(quoteName(req.Table)).CreateInBatches(resList, len(resList))
+	err = res.Error
+	if err != nil {
+		log.Errorf("err:%v", err)
+		return nil, err
+	}
+
+	insertIDKey := fmt.Sprintf("@%s", "id")
+	lastInsertId, ok := resList[0][insertIDKey]
+	if ok {
+		val := convert2Uint64(lastInsertId)
+		if val != 0 {
+			rsp.LastInsertId = val
+		} else {
+			log.Errorf("not get last insert id")
+		}
+	}
+	rsp.RowsAffected = uint64(res.RowsAffected)
 	return &rsp, nil
 }
 
@@ -300,6 +338,51 @@ func compareDbColAndAdjust(objType *engine.ModelObjectType, j map[string]interfa
 	return nil
 }
 
+func getBatchInsertObjMapList(objType *engine.ModelObjectType, jsonDataList []string) ([]map[string]interface{}, error) {
+	hasCreatedAt := false
+	hasUpdatedAt := false
+	for _, v := range objType.FieldList.List {
+		if v.FieldName == createdAt && v.Type == "uint32" {
+			hasCreatedAt = true
+		}
+		if v.FieldName == updatedAt && v.Type == "uint32" {
+			hasUpdatedAt = true
+		}
+	}
+
+	now := uint32(time.Now().Unix())
+	var resList []map[string]interface{}
+	for _, jsonData := range jsonDataList {
+		var j map[string]interface{}
+		err := decodeJson(jsonData, &j)
+		if err != nil {
+			log.Errorf("err:%v", err)
+			return nil, err
+		}
+
+		_, err = adjustJson(objType, j, nil)
+		if err != nil {
+			log.Errorf("err:%s", err)
+			return nil, err
+		}
+
+		if hasCreatedAt {
+			setIfZero(j, createdAt, now)
+		}
+		if hasUpdatedAt {
+			setIfZero(j, updatedAt, now)
+		}
+		for _, field := range objType.FieldList.List {
+			v := j[field.FieldName]
+			if v == nil {
+				j[field.FieldName] = getFieldDefaultValue(field)
+			}
+		}
+		resList = append(resList, j)
+	}
+	return resList, nil
+}
+
 func ProcessingInsertValuesWithCrypt(j map[string]interface{}) (keys []string, values []interface{}, qs []string, err error) {
 	for k, v := range j {
 		keys = append(keys, quoteName(k))
@@ -320,4 +403,62 @@ func IsMysqlUniqueIndexConflictError(err error) (isDup bool) {
 		}
 	}
 	return
+}
+
+//func getFieldDefaultValue(f *engine.ObjectField) string {
+//	if f.IsArray {
+//		return ""
+//	}
+//	switch f.Type {
+//	case "uint32", "int32", "uint64", "int64", "bool":
+//		return "0"
+//	case "string":
+//		return `""`
+//	case "float", "double":
+//		return "0.0"
+//	}
+//	return ""
+//}
+
+func getFieldDefaultValue(f *engine.ObjectField) interface{} {
+	if f.IsArray {
+		return ""
+	}
+	switch f.Type {
+	case "uint32", "int32", "uint64", "int64", "bool":
+		return 0
+	case "string":
+		return ""
+	case "float", "double":
+		return 0.0
+	}
+	return ""
+}
+
+func convert2Uint64(value interface{}) uint64 {
+	// 使用类型断言尝试将 value 转换为 uint64
+	if v, ok := value.(uint64); ok {
+		return v
+	}
+
+	// 如果 value 是其他整数类型，可以先转换为字符串再转为 uint64
+	if strVal, ok := value.(string); ok {
+		if uintVal, err := strconv.ParseUint(strVal, 10, 64); err == nil {
+			return uintVal
+		}
+	}
+
+	// 如果 value 是 int 或 int64 类型，可以先转换为 string 再转为 uint64
+	if intValue, ok := value.(int); ok {
+		if uintVal, err := strconv.ParseUint(fmt.Sprintf("%d", intValue), 10, 64); err == nil {
+			return uintVal
+		}
+	}
+
+	if int64Value, ok := value.(int64); ok {
+		if uintVal, err := strconv.ParseUint(fmt.Sprintf("%d", int64Value), 10, 64); err == nil {
+			return uintVal
+		}
+	}
+	return 0
 }
