@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"github.com/oldbai555/lbtool/log"
 	"gorm.io/gorm/logger"
-	"gorm.io/gorm/utils"
-
 	"time"
 )
 
@@ -28,9 +26,9 @@ const (
 )
 
 const (
-	traceStr     = "%s [%.3fms] [rows:%v] %s"
-	traceWarnStr = "%s %s [%.3fms] [rows:%v] %s"
-	traceErrStr  = "%s %s [%.3fms] [rows:%v] %s"
+	traceStr     = "%s [%.3fms] [rows:%v]"
+	traceWarnStr = "%s %s [%.3fms] [rows:%v]"
+	traceErrStr  = "%s %s [%.3fms] [rows:%v]"
 )
 
 // NewOrmLog initialize logger
@@ -49,7 +47,7 @@ func (l *ormlog) LogMode(level logger.LogLevel) logger.Interface {
 }
 
 func (l ormlog) Info(ctx context.Context, msg string, data ...interface{}) {
-	log.Infof(msg, data...)
+	log.Debugf(msg, data...)
 }
 
 func (l ormlog) Warn(ctx context.Context, msg string, data ...interface{}) {
@@ -66,25 +64,26 @@ func (l ormlog) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 	switch {
 	case err != nil && (!errors.Is(err, logger.ErrRecordNotFound)):
 		sql, rows := fc()
+		//utils.FileWithLineNum()
 		if rows == -1 {
-			l.Error(ctx, traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			l.Error(ctx, traceErrStr, err, sql, float64(elapsed.Nanoseconds())/1e6, "-")
 		} else {
-			l.Error(ctx, traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			l.Error(ctx, traceErrStr, err, sql, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	case elapsed > l.slowThreshold && l.slowThreshold != 0:
 		sql, rows := fc()
 		slowLog := fmt.Sprintf("SLOW SQL >= %v", l.slowThreshold)
 		if rows == -1 {
-			l.Warn(ctx, traceWarnStr, utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			l.Warn(ctx, traceWarnStr, slowLog, sql, float64(elapsed.Nanoseconds())/1e6, "-")
 		} else {
-			l.Warn(ctx, traceWarnStr, utils.FileWithLineNum(), slowLog, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			l.Warn(ctx, traceWarnStr, slowLog, sql, float64(elapsed.Nanoseconds())/1e6, rows)
 		}
 	default:
 		sql, rows := fc()
 		if rows == -1 {
-			l.Info(ctx, traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, "-", sql)
+			l.Info(ctx, traceStr, sql, float64(elapsed.Nanoseconds())/1e6, "-")
 		} else {
-			l.Info(ctx, traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			l.Info(ctx, traceStr, sql, float64(elapsed.Nanoseconds())/1e6, rows)
 		}
 	}
 }
