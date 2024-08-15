@@ -191,7 +191,6 @@ func registerCmd(router *gin.Engine, cmd *bcmd.Cmd, checkF CheckAuthFunc) {
 			handler.Error(err)
 			return
 		}
-		log.Infof("req is %v", msg.String())
 
 		handlerRet := v.Call([]reflect.Value{reflect.ValueOf(nCtx), reqV})
 
