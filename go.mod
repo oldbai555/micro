@@ -10,8 +10,9 @@ require (
 	github.com/emirpasic/gods v1.18.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/json-iterator/go v1.1.12
-	github.com/oldbai555/lbtool v0.0.4-0.20240619075006-d890bfa855fd
+	github.com/oldbai555/lbtool v0.0.4-0.20241024095541-bacdcaef91ab
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.1
 	go.etcd.io/etcd/client/v3 v3.5.9
@@ -39,7 +40,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/go-resty/resty/v2 v2.7.0 // indirect
-	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
