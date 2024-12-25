@@ -179,8 +179,8 @@ github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjY
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/nxadm/tail v1.4.8 h1:nPr65rt6Y5JFSKQO7qToXr7pePgD6Gwiw05lkbyAQTE=
-github.com/oldbai555/lbtool v0.0.4-0.20241024095541-bacdcaef91ab h1:DeWCIGg6epnFcAKvwe3MR3sm5+/t2V1+rlYTadnDULI=
-github.com/oldbai555/lbtool v0.0.4-0.20241024095541-bacdcaef91ab/go.mod h1:kuAjq3HCaTvreEtYhdRcebVFeOAZn9xje2TO0OqSn1Y=
+github.com/oldbai555/lbtool v0.0.4-0.20241225081330-187682ac7b55 h1:iad5h50Fiy5honpXJCxkKXrkuvxEbXuFNRF3ADfMHZY=
+github.com/oldbai555/lbtool v0.0.4-0.20241225081330-187682ac7b55/go.mod h1:kuAjq3HCaTvreEtYhdRcebVFeOAZn9xje2TO0OqSn1Y=
 github.com/onsi/ginkgo v1.16.5 h1:8xi0RTUf59SOSfEtZMvwTvXYMzG4gV23XVHOZiXNtnE=
 github.com/onsi/gomega v1.21.1 h1:OB/euWYIExnPBohllTicTHmGTrMaqJ67nIu80j0/uEM=
 github.com/onsi/gomega v1.21.1/go.mod h1:iYAIXgPSaDHak0LCMA+AWBpIKBr8WZicMxnE8luStNc=

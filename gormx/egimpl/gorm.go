@@ -170,6 +170,8 @@ func NewGormEngine(dsn string) *GormEngine {
 	g := &GormEngine{
 		objTypeMgr: make(map[string]*engine.ModelObjectType),
 	}
+	ormLog := NewOrmLog(time.Second * 5)
+	ormLog.skipCall = 11
 	g.db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,  // 是否单表，命名是否复数
@@ -178,7 +180,7 @@ func NewGormEngine(dsn string) *GormEngine {
 
 		PrepareStmt: true, // 预编译 在执行任何 SQL 时都会创建一个 prepared statement 并将其缓存，以提高后续的效率
 
-		Logger: NewOrmLog(time.Second * 5),
+		Logger: ormLog,
 	})
 	if err != nil {
 		panic(err)

@@ -32,7 +32,7 @@ const (
 )
 
 // NewOrmLog initialize logger
-func NewOrmLog(slowThreshold time.Duration) logger.Interface {
+func NewOrmLog(slowThreshold time.Duration) *ormlog {
 	return &ormlog{
 		slowThreshold: slowThreshold,
 	}
@@ -40,6 +40,7 @@ func NewOrmLog(slowThreshold time.Duration) logger.Interface {
 
 type ormlog struct {
 	slowThreshold time.Duration
+	skipCall      int
 }
 
 func (l *ormlog) LogMode(level logger.LogLevel) logger.Interface {
@@ -47,19 +48,34 @@ func (l *ormlog) LogMode(level logger.LogLevel) logger.Interface {
 }
 
 func (l ormlog) Info(ctx context.Context, msg string, data ...interface{}) {
+	log.GetLogger().SetSkipCall(l.skipCall)
+	defer func() {
+		log.GetLogger().SetSkipCall(log.DefaultSkipCall)
+	}()
 	log.Debugf(msg, data...)
 }
 
 func (l ormlog) Warn(ctx context.Context, msg string, data ...interface{}) {
+	log.GetLogger().SetSkipCall(l.skipCall)
+	defer func() {
+		log.GetLogger().SetSkipCall(log.DefaultSkipCall)
+	}()
 	log.Warnf(msg, data...)
-
 }
 
 func (l ormlog) Error(ctx context.Context, msg string, data ...interface{}) {
+	log.GetLogger().SetSkipCall(l.skipCall)
+	defer func() {
+		log.GetLogger().SetSkipCall(log.DefaultSkipCall)
+	}()
 	log.Errorf(msg, data...)
 }
 
 func (l ormlog) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+	log.GetLogger().SetSkipCall(l.skipCall)
+	defer func() {
+		log.GetLogger().SetSkipCall(log.DefaultSkipCall)
+	}()
 	elapsed := time.Since(begin)
 	switch {
 	case err != nil && (!errors.Is(err, logger.ErrRecordNotFound)):
