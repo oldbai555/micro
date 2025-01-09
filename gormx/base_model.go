@@ -105,6 +105,10 @@ func (p *BaseModel[M]) Select(fields ...string) *BaseScope[M] {
 	return p.NewBaseScope().Select(fields...)
 }
 
+func (p *BaseModel[M]) WithTransactionId(trId string) *BaseScope[M] {
+	return p.NewBaseScope().WithTransactionId(trId)
+}
+
 func (p *BaseModel[M]) Where(whereCond ...interface{}) *BaseScope[M] {
 	s := p.NewBaseScope()
 	s.cond.Where(whereCond...)

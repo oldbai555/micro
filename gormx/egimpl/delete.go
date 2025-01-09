@@ -38,10 +38,11 @@ func (g *GormEngine) DelModel(ctx uctx.IUCtx, req *engine.DelModelReq) (*engine.
 
 	var res *gorm.DB
 	var err error
+	db := g.GetDB(req.TrId)
 	if hasDeletedAt && !req.Unscoped {
 		now := utils.TimeNow()
 		res = dbExec(
-			ctx, g.db,
+			ctx, db,
 			fmt.Sprintf("UPDATE %s SET deleted_at=%d WHERE %s%s",
 				quoteName(req.Table), now, req.Cond, limitCond))
 		err = res.Error
@@ -51,7 +52,7 @@ func (g *GormEngine) DelModel(ctx uctx.IUCtx, req *engine.DelModelReq) (*engine.
 		}
 	} else {
 		res = dbExec(
-			ctx, g.db,
+			ctx, db,
 			fmt.Sprintf("DELETE FROM %s WHERE %s%s",
 				quoteName(req.Table), req.Cond, limitCond), Option{codeFileLineFunc: req.CodeFileLineFunc, ignoreBroken: req.IgnoreBroken})
 		err = res.Error

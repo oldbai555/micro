@@ -45,6 +45,8 @@ func (g *GormEngine) InsertModel(ctx uctx.IUCtx, req *engine.InsertModelReq) (*e
 			setIfZero(j, updatedAt, now)
 		} else if v.FieldName == deletedAt && v.Type == "uint32" {
 			setIfZero(j, deletedAt, 0)
+		} else if v.FieldName == creatorId && v.Type == "uint64" {
+			setIfZero(j, creatorId, 0)
 		}
 	}
 
@@ -91,7 +93,8 @@ func (g *GormEngine) InsertModel(ctx uctx.IUCtx, req *engine.InsertModelReq) (*e
 	}
 
 	// 执行原生SQL貌似拿插入的ID有点非常的麻烦
-	res := g.db.Table(quoteName(req.Table)).Create(j)
+	db := g.GetDB(req.TrId)
+	res := db.Table(quoteName(req.Table)).Create(j)
 	err = res.Error
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -175,7 +178,8 @@ func (g *GormEngine) BatchInsertModel(ctx uctx.IUCtx, req *engine.BatchInsertMod
 		return nil, lberr.NewInvalidArg("not found batch insert object list")
 	}
 
-	res := g.db.Table(quoteName(req.Table)).CreateInBatches(resList, len(resList))
+	db := g.GetDB(req.TrId)
+	res := db.Table(quoteName(req.Table)).CreateInBatches(resList, len(resList))
 	err = res.Error
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -341,12 +345,16 @@ func compareDbColAndAdjust(objType *engine.ModelObjectType, j map[string]interfa
 func getBatchInsertObjMapList(objType *engine.ModelObjectType, jsonDataList []string) ([]map[string]interface{}, error) {
 	hasCreatedAt := false
 	hasUpdatedAt := false
+	hasCreatorId := false
 	for _, v := range objType.FieldList.List {
 		if v.FieldName == createdAt && v.Type == "uint32" {
 			hasCreatedAt = true
 		}
 		if v.FieldName == updatedAt && v.Type == "uint32" {
 			hasUpdatedAt = true
+		}
+		if v.FieldName == creatorId && v.Type == "uint64" {
+			hasCreatorId = true
 		}
 	}
 
@@ -371,6 +379,9 @@ func getBatchInsertObjMapList(objType *engine.ModelObjectType, jsonDataList []st
 		}
 		if hasUpdatedAt {
 			setIfZero(j, updatedAt, now)
+		}
+		if hasCreatorId {
+			setIfZero(j, creatorId, 0)
 		}
 		for _, field := range objType.FieldList.List {
 			v := j[field.FieldName]

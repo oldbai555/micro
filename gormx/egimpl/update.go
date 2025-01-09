@@ -89,8 +89,9 @@ func (g *GormEngine) UpdateModel(ctx uctx.IUCtx, req *engine.UpdateModelReq) (*e
 		values = append(values, v)
 	}
 
+	db := g.GetDB(req.TrId)
 	res := dbExec(
-		ctx, g.db,
+		ctx, db,
 		fmt.Sprintf("UPDATE %s SET %s%s%s",
 			quoteName(req.Table),
 			strings.Join(fields, ","), cond, limit),
@@ -189,8 +190,9 @@ func (g *GormEngine) SetModel(ctx uctx.IUCtx, req *engine.SetModelReq) (*engine.
 	j["id"] = convert2Uint64(id)
 	values = append(values, j["id"])
 
+	db := g.GetDB(req.TrId)
 	res := dbExec(
-		ctx, g.db,
+		ctx, db,
 		fmt.Sprintf(sqlStr, quoteName(req.Table), strings.Join(fields, ","), cond),
 		values...,
 	)

@@ -23,6 +23,7 @@ const (
 	createdAt = "created_at"
 	updatedAt = "updated_at"
 	deletedAt = "deleted_at"
+	creatorId = "creator_id"
 )
 
 func findFieldsByGetModelListReq(req *engine.GetModelListReq, objectType *engine.ModelObjectType) (string, error) {

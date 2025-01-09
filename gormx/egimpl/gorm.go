@@ -33,6 +33,9 @@ type GormEngine struct {
 	db         *gorm.DB
 	lock       sync.Mutex
 	objTypeMgr map[string]*engine.ModelObjectType
+
+	trLock sync.Mutex
+	trMap  map[string]*trInfo
 }
 
 func (g *GormEngine) RegObjectType(objTypeList ...*engine.ModelObjectType) {
@@ -43,8 +46,17 @@ func (g *GormEngine) RegObjectType(objTypeList ...*engine.ModelObjectType) {
 	}
 }
 
-func (g *GormEngine) DB() *gorm.DB {
-	return g.db
+func (g *GormEngine) GetDB(trId string) *gorm.DB {
+	g.trLock.Lock()
+	defer g.trLock.Unlock()
+	if trId == "" {
+		return g.db
+	}
+	tr, ok := g.trMap[trId]
+	if !ok {
+		panic(fmt.Sprintf("not found trId %s", trId))
+	}
+	return tr.txDb
 }
 
 func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (*engine.GetModelListRsp, error) {
@@ -90,7 +102,8 @@ func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (
 		items = append(items, fmt.Sprintf("OFFSET %d", req.Offset))
 	}
 
-	res, err := RawQuery(ctx, g.db, strings.Join(items, " "))
+	db := g.GetDB(req.TrId)
+	res, err := RawQuery(ctx, db, strings.Join(items, " "))
 	if err != nil {
 		log.Errorf("err:%v", err)
 		return nil, err
@@ -114,7 +127,7 @@ func (g *GormEngine) GetModelList(ctx uctx.IUCtx, req *engine.GetModelListReq) (
 				items = append(items, fmt.Sprintf("GROUP BY %s", req.Group))
 			}
 			stmt := strings.Join(items, " ")
-			res, err := RawQuery(ctx, g.db, stmt)
+			res, err := RawQuery(ctx, db, stmt)
 			if err != nil {
 				log.Errorf("err:%v", err)
 				return nil, err
@@ -155,10 +168,11 @@ func (g *GormEngine) AutoMigrate(modelList []interface{}) {
 	if len(modelList) == 0 {
 		return
 	}
-	if g.db == nil {
+	db := g.GetDB("")
+	if db == nil {
 		panic("db is nil")
 	}
-	err := g.db.Set(autoMigrateOptKey, autoMigrateOptValue).AutoMigrate(modelList...)
+	err := db.Set(autoMigrateOptKey, autoMigrateOptValue).AutoMigrate(modelList...)
 	if err != nil {
 		log.Errorf("err:%v", err)
 		panic(err)
@@ -169,6 +183,7 @@ func NewGormEngine(dsn string) *GormEngine {
 	var err error
 	g := &GormEngine{
 		objTypeMgr: make(map[string]*engine.ModelObjectType),
+		trMap:      make(map[string]*trInfo),
 	}
 	ormLog := NewOrmLog(time.Second * 5)
 	ormLog.skipCall = 11

@@ -41,6 +41,8 @@ type BaseScope[M any] struct {
 
 	ignoreConflict bool
 	ignoreBroken   bool
+
+	trId string
 }
 
 func (p *BaseScope[M]) GetModel() *BaseModel[M] {
@@ -195,6 +197,7 @@ func (p *BaseScope[M]) newGetModelListReq() *engine.GetModelListReq {
 		CodeFileLineFunc:    p.caller,
 		CorpId:              p.corpId,
 		IgnoreBroken:        p.ignoreBroken,
+		TrId:                p.trId,
 	}
 }
 
@@ -275,6 +278,7 @@ func (p *BaseScope[M]) Create(ctx uctx.IUCtx, obj interface{}) error {
 		CodeFileLineFunc: p.caller,
 		CorpId:           p.corpId,
 		IgnoreBroken:     p.ignoreBroken,
+		TrId:             p.trId,
 	})
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -394,6 +398,7 @@ func (p *BaseScope[M]) Delete(ctx uctx.IUCtx) (DeleteResult, error) {
 		CorpId:           p.corpId,
 		IgnoreBroken:     p.ignoreBroken,
 		Db:               p.db,
+		TrId:             p.trId,
 	}
 	rsp, err := ormEngine.DelModel(ctx, req)
 	if err != nil {
@@ -468,6 +473,7 @@ func (p *BaseScope[M]) Update(ctx uctx.IUCtx, updateMap map[string]interface{}) 
 		Limit:            p.limit,
 		IgnoreBroken:     p.ignoreBroken,
 		Db:               p.db,
+		TrId:             p.trId,
 	})
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -522,6 +528,7 @@ func (p *BaseScope[M]) BatchCreate(ctx uctx.IUCtx, chunkSize int, objList interf
 			CorpId:           p.corpId,
 			IgnoreBroken:     p.ignoreBroken,
 			Db:               p.db,
+			TrId:             p.trId,
 		})
 		if err != nil {
 			log.Errorf("err:%v", err)
@@ -582,6 +589,7 @@ func (p *BaseScope[M]) Save(ctx uctx.IUCtx, obj interface{}) (UpdateResult, erro
 		CorpId:           p.corpId,
 		IgnoreBroken:     p.ignoreBroken,
 		Db:               p.db,
+		TrId:             p.trId,
 	})
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -835,4 +843,9 @@ func (p *BaseScope[M]) FirstOrCreate(ctx uctx.IUCtx, attributes map[string]inter
 		return res, err
 	}
 	return res, nil
+}
+
+func (p *BaseScope[M]) WithTransactionId(trId string) *BaseScope[M] {
+	p.trId = trId
+	return p
 }
