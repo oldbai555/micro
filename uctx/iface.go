@@ -2,7 +2,7 @@ package uctx
 
 import (
 	"context"
-	"google.golang.org/grpc/status"
+	"github.com/oldbai555/lbtool/pkg/lberr"
 )
 
 type IUCtx interface {
@@ -29,4 +29,4 @@ func ToUCtx(ctx context.Context) (IUCtx, error) {
 	return iuCtx, nil
 }
 
-var convertErr = status.Error(99999, "convert u ctx failed")
+var convertErr = lberr.NewCustomErr("convert ctx failed")

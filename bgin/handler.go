@@ -149,7 +149,7 @@ func (r *Handler) Error(err error) {
 	// 获取根错误
 	rootErr := errors.Cause(err)
 
-	if e, ok := rootErr.(*lberr.LbErr); ok {
+	if e, ok := rootErr.(*lberr.Error); ok {
 		r.RespByJson(http.StatusOK, e.Code(), "", e.Message())
 		return
 	}
