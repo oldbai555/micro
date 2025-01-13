@@ -10,7 +10,6 @@ import (
 	"github.com/oldbai555/lbtool/pkg/jsonpb"
 	"github.com/oldbai555/lbtool/pkg/lberr"
 	"github.com/oldbai555/micro/bconst"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 	"io"
@@ -146,10 +145,7 @@ func (r *Handler) Success(data proto.Message) {
 
 // 响应错误
 func (r *Handler) Error(err error) {
-	// 获取根错误
-	rootErr := errors.Cause(err)
-
-	if e, ok := rootErr.(*lberr.Error); ok {
+	if e, ok := err.(*lberr.Error); ok {
 		r.RespByJson(http.StatusOK, e.Code(), "", e.Message())
 		return
 	}
