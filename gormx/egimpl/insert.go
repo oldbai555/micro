@@ -47,6 +47,11 @@ func (g *GormEngine) InsertModel(ctx uctx.IUCtx, req *engine.InsertModelReq) (*e
 			setIfZero(j, deletedAt, 0)
 		} else if v.FieldName == creatorId && v.Type == "uint64" {
 			setIfZero(j, creatorId, 0)
+		} else {
+			val := j[v.FieldName]
+			if val == nil {
+				j[v.FieldName] = getFieldDefaultValue(v)
+			}
 		}
 	}
 
@@ -436,7 +441,9 @@ func getFieldDefaultValue(f *engine.ObjectField) interface{} {
 		return ""
 	}
 	switch f.Type {
-	case "uint32", "int32", "uint64", "int64", "bool":
+	case "int", "int8", "int16", "int32", "int64",
+		"uint", "uint8", "uint16", "uint32", "uint64",
+		"bool":
 		return 0
 	case "string":
 		return ""
