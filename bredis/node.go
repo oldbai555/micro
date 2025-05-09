@@ -17,9 +17,9 @@ import (
 	"time"
 )
 
-func New(ip string, port int, password string) (g *Group, err error) {
+func New(ip string, port int, username, password string) (g *Group, err error) {
 	g = &Group{service: "redis", password: password}
-	g.nodeList = append(g.nodeList, newNode(ip, port, password))
+	g.nodeList = append(g.nodeList, newNode(ip, port, username, password))
 	if len(g.nodeList) == 0 {
 		err = errors.New("not found available redis node")
 		log.Errorf("err:%v", err)
@@ -106,7 +106,7 @@ func hashStr(s string) uint32 {
 	return f.Sum32()
 }
 
-func newNode(ip string, port int, password string) *Node {
+func newNode(ip string, port int, username, password string) *Node {
 	n := new(Node)
 	n.ip = ip
 	n.port = port
@@ -114,6 +114,7 @@ func newNode(ip string, port int, password string) *Node {
 	n.client = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", ip, port),
 		Password: password,
+		Username: username,
 	})
 	return n
 }
